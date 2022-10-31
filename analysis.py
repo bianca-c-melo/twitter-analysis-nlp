@@ -13,7 +13,7 @@ nlp = spacy.load("pt_core_news_sm")
 
 
 df1 = pd.read_csv(
-    r'/Users/biancacamargodepaulamelo/PycharmProjects/pythonProject1/twitter-analysis-nlp/tweets.csv')
+    r'twitter-analysis-nlp/tweets.csv')
 
 
 # Filter the stopword
