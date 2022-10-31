@@ -6,15 +6,14 @@ from nltk import word_tokenize
 from string import punctuation
 import unicodedata
 import nltk
+import os
 nltk.download('punkt')
 nltk.download('stopwords')
 
 nlp = spacy.load("pt_core_news_sm")
 
-
-df1 = pd.read_csv(
-    r'twitter-analysis-nlp/tweets.csv')
-
+PATH = os.path.dirname(os.path.realpath(__file__))
+df1 = pd.read_csv(PATH+"/twitter-analysis-nlp/tweets.csv")
 
 # Filter the stopword
 def remove_stop_words(x):
