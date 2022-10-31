@@ -13,7 +13,7 @@ nltk.download('stopwords')
 nlp = spacy.load("pt_core_news_sm")
 
 PATH = os.path.dirname(os.path.realpath(__file__))
-df1 = pd.read_csv(PATH+"/twitter-analysis-nlp/tweets.csv")
+df1 = pd.read_csv(PATH+"/tweets.csv")
 
 # Filter the stopword
 def remove_stop_words(x):
