@@ -7,7 +7,7 @@ client = tweepy.Client(
 
 query = 'diversidade -is:retweet  lang:pt'
 
-# coleta o tweets com a quantidade desejada e numero de runs desejados e faz uma pausa de 15 min entre cada run
+# coleta os tweets com a quantidade desejada e numero de runs desejados e faz uma pausa de 15 min entre cada run
 
 
 def collect_tweets(num_tweets, num_runs):
@@ -21,7 +21,7 @@ def collect_tweets(num_tweets, num_runs):
         tweets = tweepy.Paginator(client.search_recent_tweets, query=query,
                                   tweet_fields=['text'], max_results=100).flatten(num_tweets)
 
-        tweet_list = [tweet for tweet in tweets]
+        tweet_list = [x for x in tweets]
 
         n_tweets = 0
         for tweet in tweet_list:
@@ -38,8 +38,7 @@ def collect_tweets(num_tweets, num_runs):
         print('No. de tweets coletados nessa rodada {} é {}'.format(i + 1, n_tweets))
         print('Tempo gasto na coleta {} foi {} minutos'.format(i+1, duration_run))
 
-
-        time.sleep(920)
+        time.sleep(900)
 
     # salvar o arquivo no destino
     # db_tweets.to_csv(r'path', header=True)

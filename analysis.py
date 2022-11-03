@@ -1,20 +1,18 @@
 import re
-import spacy
-from collections import Counter
+import os
 import pandas as pd
-from nltk import word_tokenize
-from string import punctuation
 import unicodedata
 import nltk
-import os
+from collections import Counter
+from nltk import word_tokenize
+from string import punctuation
 nltk.download('punkt')
 nltk.download('stopwords')
 
-nlp = spacy.load("pt_core_news_sm")
 
 # load csv
 PATH = os.path.dirname(os.path.realpath(__file__))
-df1 = pd.read_csv(PATH+"/tweets.csv")
+tweets = pd.read_csv(PATH+"/tweets.csv")
 
 # Remove stopwords
 
@@ -30,7 +28,7 @@ def remove_stop_words(x):
     return ' '.join(x)
 
 
-df1['text'] = df1['text'].apply(
+tweets['text'] = tweets['text'].apply(
     lambda x: remove_stop_words(x))
 
 
@@ -45,7 +43,8 @@ def limpar_texto(text):
     # Excluindo menções com @:
     text = re.sub('@[^\s]+', '', text)
 
-    # Removendo o a query de pesquisa ja que ela ja foi usada para pesquisar os tópicos
+    # Removendo a query de pesquisa ja que ela ja foi usada para pesquisar os tópicos e ficaria redundante
+    # nos resultados
     text = re.sub('diversidade', '', text)
 
     # Excluindo tags html:
@@ -61,31 +60,34 @@ def limpar_texto(text):
     # Excluindo pontuação:
     text = ''.join(x for x in text if x not in punctuation)
 
-    return word_tokenize(text)
+    # tokenizar o texto:
+    text = word_tokenize(text)
+
+    return text
 
 
-df1['text'] = df1['text'].apply(
+tweets['text'] = tweets['text'].apply(
     lambda text: limpar_texto(text))
 
 
 def generate_ngrams(file, size):
-    ngrams_all = []
+    array = []
     for file in file:
         output = list(nltk.ngrams(file, size))
         for ngram in output:
-            ngrams_all.append(" ".join(ngram))
+            array.append(" ".join(ngram))
     count_ngram = Counter()
-    for word in ngrams_all:
+    for word in array:
         count_ngram[word] += 1
-    df = pd.DataFrame.from_dict(count_ngram, orient='index').reset_index()
-    df = df.rename(columns={'index': 'words', 0: 'count'})
-    df = df.sort_values(by='count', ascending=False).reset_index(drop=True)
-    df = df.head(15)
-    return df
+    n_grams = pd.DataFrame.from_dict(count_ngram, orient='index').reset_index()
+    n_grams = n_grams.rename(columns={'index': 'palavras', 0: 'contagem'})
+    n_grams = n_grams.sort_values(by='contagem', ascending=False).reset_index(drop=True)
+    n_grams = n_grams.head(15)
+    return n_grams
 
 
-uni_grams = generate_ngrams(df1['text'], 1)
-bi_grams = generate_ngrams(df1['text'], 2)
-tri_grams = generate_ngrams(df1['text'], 3)
+uni_grams = generate_ngrams(tweets['text'], 1)
+bi_grams = generate_ngrams(tweets['text'], 2)
+tri_grams = generate_ngrams(tweets['text'], 3)
 
 
